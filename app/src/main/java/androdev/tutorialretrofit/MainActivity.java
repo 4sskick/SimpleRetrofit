@@ -12,6 +12,7 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
+//http://www.androidwarriors.com/2015/12/retrofit-20-android-example-web.html
 public class MainActivity extends AppCompatActivity {
 
     String url = "http://api.openweathermap.org/data/2.5/";
@@ -27,20 +28,25 @@ public class MainActivity extends AppCompatActivity {
         humidityTxt = (TextView) findViewById(R.id.txtHumidity);
         pressureTxt = (TextView) findViewById(R.id.txtPress);
 
+        //builld URL
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(url)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
+        //create service from interface
         RetrofitInterface service = retrofit.create(RetrofitInterface.class);
+        //call method from interface to implement its method
         Call<Model> modelCall = service.getWeatherReport("Malang,ID",
                 "create your API key!");
 
-        //execute call
+        //execute call service
         modelCall.enqueue(new Callback<Model>() {
             @Override
             public void onResponse(Call<Model> call, Response<Model> response) {
+                //add some try catch to avoide force close 
                 try{
+                    // get value from response.body then find mutator
                     String city = response.body().getName();
                     String status = response.body().getWeather().get(0).getDescription();
                     String humidity = response.body().getMain().getHumidity().toString();
@@ -58,6 +64,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onFailure(Call<Model> call, Throwable t) {
 
+                //// TODO: 28-Apr-16  
             }
         });
     }
